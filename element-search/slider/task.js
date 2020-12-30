@@ -5,41 +5,33 @@ const sliders = document.querySelectorAll('.slider__item'),
 let slideActive = 0;
 
 prev.onclick = () => {
-    sliders[slideActive].classList.remove('slider__item_active');
-    dots[slideActive].classList.remove('slider__dot_active');
-
     if (slideActive - 1 < 0) {
         slideActive = sliders.length - 1;
     } else {
         slideActive -= 1;
     }
-
-    sliders[slideActive].classList.add('slider__item_active');
-    dots[slideActive].classList.add('slider__dot_active');
+    changeSlide(slideActive);
 }
 
 next.onclick = () => {
-    sliders[slideActive].classList.remove('slider__item_active');
-    dots[slideActive].classList.remove('slider__dot_active');
-
     if (slideActive + 1 === sliders.length) {
         slideActive = 0;
     } else {
         slideActive += 1;
     }
-
-    sliders[slideActive].classList.add('slider__item_active');
-    dots[slideActive].classList.add('slider__dot_active');
+    changeSlide(slideActive);
 }
 
 // Управление точками
 dots[slideActive].classList.add('slider__dot_active');
 [...dots].forEach((item, i) => item.onclick = () => {
-    sliders[slideActive].classList.remove('slider__item_active');
-    dots[slideActive].classList.remove('slider__dot_active');
-
-    slideActive = i;
-
-    sliders[slideActive].classList.add('slider__item_active');
-    dots[slideActive].classList.add('slider__dot_active');
+    changeSlide(i);
 });
+
+// Функция переключения слайда на номер i
+function changeSlide(i) {
+    [...sliders].forEach((item) => item.classList.remove('slider__item_active'));
+    [...dots].forEach((item) => item.classList.remove('slider__dot_active'));
+    sliders[i].classList.add('slider__item_active');
+    dots[i].classList.add('slider__dot_active');
+}

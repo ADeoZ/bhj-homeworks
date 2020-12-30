@@ -11,7 +11,8 @@ const close = document.getElementsByClassName('modal__close');
 
 // Показываем окно modal_success
 const success = document.getElementById('modal_success');
-const showSuccess = document.getElementsByClassName('show-success');
-[...showSuccess].forEach((item) => item.onclick = () => {
+const showSuccess = document.querySelector('.show-success');
+showSuccess.onclick = () => {
+    main.classList.remove('modal_active');
     success.classList.add('modal_active');
-});
+};
