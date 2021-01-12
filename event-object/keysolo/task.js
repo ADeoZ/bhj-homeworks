@@ -1,61 +1,67 @@
 class Game {
-  constructor(container) {
-    this.container = container;
-    this.wordElement = container.querySelector('.word');
-    this.winsElement = container.querySelector('.status__wins');
-    this.lossElement = container.querySelector('.status__loss');
+    constructor(container) {
+        this.container = container;
+        this.wordElement = container.querySelector('.word');
+        this.winsElement = container.querySelector('.status__wins');
+        this.lossElement = container.querySelector('.status__loss');
+        this.timer = container.querySelector('.timer'); // таймер ввода
 
-    this.reset();
+        this.reset();
 
-    this.registerEvents();
-  }
-
-  reset() {
-    this.setNewWord();
-    this.winsElement.textContent = 0;
-    this.lossElement.textContent = 0;
-  }
-
-  registerEvents() {
-    /*
-      TODO:
-      Написать обработчик события, который откликается
-      на каждый введённый символ.
-      В случае правильного ввода слова вызываем this.success()
-      При неправильном вводе символа - this.fail();
-     */
-  }
-
-  success() {
-    this.currentSymbol.classList.add('symbol_correct');
-    this.currentSymbol = this.currentSymbol.nextElementSibling;
-    if (this.currentSymbol !== null) {
-      return;
+        this.registerEvents();
     }
 
-    if (++this.winsElement.textContent === 10) {
-      alert('Победа!');
-      this.reset();
+    reset() {
+        this.setNewWord();
+        this.winsElement.textContent = 0;
+        this.lossElement.textContent = 0;
     }
-    this.setNewWord();
-  }
 
-  fail() {
-    if (++this.lossElement.textContent === 5) {
-      alert('Вы проиграли!');
-      this.reset();
+    registerEvents() {
+        document.addEventListener('keyup', (e) => {
+            if (e.key === this.currentSymbol.textContent) {
+                this.success();
+            } else {
+                this.fail();
+            }
+        });
     }
-    this.setNewWord();
-  }
 
-  setNewWord() {
-    const word = this.getWord();
+    success() {
+        this.currentSymbol.classList.add('symbol_correct');
+        this.currentSymbol = this.currentSymbol.nextElementSibling;
+        if (this.currentSymbol !== null) {
+            return;
+        }
 
-    this.renderWord(word);
-  }
+        if (++this.winsElement.textContent === 10) {
+            alert('Победа!');
+            this.reset();
+        }
 
-  getWord() {
-    const words = [
+        this.setNewWord();
+    }
+
+    fail() {
+        if (++this.lossElement.textContent === 5) {
+            alert('Вы проиграли!');
+            this.reset();
+        }
+
+        this.setNewWord();
+    }
+
+    setNewWord() {
+        const word = this.getWord();
+
+        clearInterval(this.timerInterval); // сбрасываем предыдущий таймер
+        this.countdown(word.length); // заводим новый таймер
+        
+        this.renderWord(word);
+    }
+
+    getWord() {
+        const words = [
         'bob',
         'awesome',
         'netology',
@@ -68,23 +74,37 @@ class Game {
         'love',
         'javascript'
       ],
-      index = Math.floor(Math.random() * words.length);
+            index = Math.floor(Math.random() * words.length);
 
-    return words[index];
-  }
+        return words[index];
+    }
 
-  renderWord(word) {
-    const html = [...word]
-      .map(
-        (s, i) =>
-          `<span class="symbol ${i === 0 ? 'symbol_current': ''}">${s}</span>`
-      )
-      .join('');
-    this.wordElement.innerHTML = html;
+    renderWord(word) {
+        const html = [...word]
+            .map(
+                (s, i) =>
+                `<span class="symbol ${i === 0 ? 'symbol_current': ''}">${s}</span>`
+            )
+            .join('');
+        this.wordElement.innerHTML = html;
 
-    this.currentSymbol = this.wordElement.querySelector('.symbol_current');
-  }
+        this.currentSymbol = this.wordElement.querySelector('.symbol_current');
+    }
+
+    countdown(seconds) { // функция таймера
+        let count = seconds;
+        this.timer.textContent = count;
+
+        this.timerInterval = setInterval(() => {
+            count -= 1;
+            this.timer.textContent = count;
+
+            if (count <= 0) {
+                this.fail();
+            }
+        }, 1000);
+    }
+
 }
 
 new Game(document.getElementById('game'))
-
