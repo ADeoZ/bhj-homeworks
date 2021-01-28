@@ -1,0 +1,14 @@
+.beauty {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 300px;
+}
+
+#editor {
+    margin-bottom: 10px;
+}
+
+#button:hover + #editor {
+    color: #c1c1c1;
+    text-decoration: line-through;
+}
